@@ -1,0 +1,13 @@
+{
+  "name": "nextjs-api-prisma-dockerized-test",
+  "private": true,
+  "version": "1.0.0",
+  "keywords": [],
+  "license": "MIT",
+  "scripts": {
+    "postinstall": "npm ci --prefix ./api"
+  },
+  "devDependencies": {
+    "@types/bcrypt": "^5.0.0"
+  }
+}

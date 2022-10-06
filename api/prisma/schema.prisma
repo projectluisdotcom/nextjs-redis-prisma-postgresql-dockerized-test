@@ -1,0 +1,53 @@
+generator client {
+    provider = "prisma-client-js"
+}
+
+datasource db {
+    provider = "postgresql"
+    url      = env("DATABASE_URL")
+}
+
+model User {
+    id       String @id @default(cuid())
+    username String @unique
+    hash     String
+}
+
+model People {
+    id   String @id @default(cuid())
+    name String @unique
+
+    // We avoid float when storing monetary values to avoid fraction issues
+    // API users will have to divide by 100 and multiply by 100 to use the API correctly
+    // 150 will be $1,5 and so on
+    salary       Int
+    currency     String
+    isOnContract Boolean
+
+    departmentId String
+    department   Department @relation(fields: [departmentId], references: [id], onDelete: Cascade)
+
+    subDepartmentId String?
+    subdepartment   SubDepartment? @relation(fields: [subDepartmentId], references: [id], onDelete: Cascade)
+
+    @@index([departmentId])
+    @@index([departmentId, subDepartmentId])
+}
+
+model Department {
+    id   String @id @default(cuid())
+    name String @unique
+
+    people         People[]
+    subDepartments SubDepartment[]
+}
+
+model SubDepartment {
+    id   String @id @default(cuid())
+    name String @unique
+
+    parentId String
+    parent   Department @relation(fields: [parentId], references: [id], onDelete: Cascade)
+
+    people People[]
+}
